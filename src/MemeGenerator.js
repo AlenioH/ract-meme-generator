@@ -10,55 +10,70 @@ const generatorStyle = css`
 `;
 
 function MemeGenerator(props) {
-  const [img, setImg] = useState([]);
+  // const [img, setImg] = useState([]);
   const [topText, setTopText] = useState('');
   const [bottomText, setBottomText] = useState('');
 
-  // async function fetchImage() {
-  //   //function on submit!!
+  //  async function fetchImage() {
+  //   //function onclick
+  // do i need an API key????
   //   // Get the memes
-  //   const imgData = await fetch('https://memegen.link/')
-  //     .then((res) => res.json())
-  //     .catch((err) => console.error(err));
+  //    try const imgData = await fetch('https://memegen.link')
+  //   .then((res) => console.log(imgData));
+  // //     .then((res) => res.json())
+  //  .catch((err) => console.error(err));
   //   // const { memes } = await imgData.data;
   //   // Update images state
   //   // await setImg(memes);
-  //   // Update activeImage state
-  //   // await setActiveImage(memes[0].url);
   // }
+  const onChangeBottom = (event) => {
+    console.log(event.target.value);
+    setBottomText(event.target.value);
+  };
+  const onChangeTop = (event) => {
+    console.log(event.target.value);
+    setTopText(event.target.value); //it tracks the changes i think but how do i get the text to show on the pic
+  };
+  const link =
+    'https://memegen.link/bender/' +
+    { topText } +
+    '/' +
+    { bottomText } +
+    '.jpg'; //and replace spaces with lodashes;
 
-  //   fetch("https://memegen.link/bender/my_own_app/with_black_jack_and_hooks.jpg?watermark=none", {
-  //   "referrer": "https://memegen.link/",
-  //   "referrerPolicy": "no-referrer-when-downgrade",
-  //   "body": null,
-  //   "method": "GET",
-  //   "mode": "cors",
-  //   "credentials": "omit"
-  // });
   return (
     <div className="form">
       <h2 css={generatorStyle}> This part here generates memes</h2>
-      <label for="memes">Choose image:</label>
+
+      <img src={link} alt="One meme"></img>
+      {/* <label for="memes">Choose image:</label>
       <select id="memes">
-        <option value="meme1">
-          {/* '<a href="https://memegen.link/">Bender</a>' this return just empty objectsgi */}{' '}
-          some value
-        </option>
-      </select>
+        <option value="meme1">Memes everywhere</option>
+      </select> */}
+
       <input
-        name="text-top"
+        // name="text-top"
         placeholder="Text top"
         type="text"
-        value={props.topText}
+        onChange={onChangeTop}
+        value={topText}
       />
+
       <input
-        name="text-bottom"
+        // name="text-bottom"
         placeholder="Text bottom"
         type="text"
-        value={props.topBottom}
+        value={bottomText}
+        onChange={onChangeBottom}
       />
+
+      {/* <button type="button" onClick={() => props.onSubmit(topText, bottomText)}>
+        Submit! 
+      </button> */}
     </div>
-  );
+  ); //the button kinda crashes everything
 }
 
 export default MemeGenerator;
+
+// https://memegen.link/bender/my_own_app/with_black_jack_and_hooks.jpg
