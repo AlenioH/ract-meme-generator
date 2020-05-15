@@ -105,6 +105,7 @@ function MemeGenerator() {
   //     name: i } ; } the idea is to map over links and assign links to names which were mapped over kinda the names ARe links
 
   //this function downloads the image
+
   function downloadHandler() {
     const url = finalUrl;
     const name = finalUrl.replace('https://memegen.link/', ''); //so that the downloaded img end up with normal names
@@ -133,10 +134,10 @@ function MemeGenerator() {
       <h2 css={generatorStyle}> This part here generates memes</h2>
       <p>Pick an image:</p>
       <select id="memes" onChange={onChangeSelect} css={inputstyle}>
-        {memes.map((name, i) => {
+        {memes.map((link, i) => {
           return (
-            <option key={i} value={name.replace('api/templates/', '')}>
-              {name.replace('https://memegen.link/api/templates/', '')}
+            <option value={link.replace('api/templates/', '')}>
+              "{names[i]}"
             </option>
           );
         })}
