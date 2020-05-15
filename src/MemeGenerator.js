@@ -10,44 +10,86 @@ const generatorStyle = css`
   font-family: fantasy;
 `;
 
-function MemeGenerator(props) {
+const divForm = css`
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: fantasy;
+  width: 55%;
+  margin: auto;
+`;
+const inputstyle = css`
+  margin: 15px;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  &:focus {
+    border-color: #30336b;
+  }
+`;
+
+const imgstyle = css`
+  border: 1.5px solid #30336b;
+  border-radius: 3px;
+  box-shadow: 10px 5px 5px #535c68;
+  margin: 30px;
+`;
+
+const buttonstyle = css`
+  margin: 15px;
+  padding: 15px;
+  font-size: 1rem;
+  border: 1px solid #535c68;
+  border-radius: 4px;
+  font-weight: bold;
+  width: 20%;
+  margin: auto;
+  &:hover {
+    background-color: #95afc0;
+  }
+`;
+
+function MemeGenerator() {
   const [topText, setTopText] = useState('');
   const [bottomText, setBottomText] = useState('');
   const [memes, setMemes] = useState([]);
   const [names, setNames] = useState([]);
   const [select, setSelect] = useState('https://memegen.link/bender');
-  // {
-  //   headers: { 'Content-Type': 'application/json' },
-  // }
+
   useEffect(() => {
+    //this function fetches the images
     fetch('https://memegen.link/api/templates/')
       .then((res) => res.json())
 
       .then((data) => {
-        //console.log(Object.values(data));
         // log all the names and urls from templates as Object
         const imgNames = Object.keys(data);
-        // console.log(Object.keys(data));
         setNames(imgNames);
         const imgLinks = Object.values(data);
         setMemes(imgLinks);
-        // console.log(Object.entries(data));
+        // console.log(Object.entries(data)); this one returns names AND urls
       })
       .catch((e) => console.log(e));
   }, []);
+
   const onChangeSelect = (event) => {
-    // Step 2: Update the value with whatever the user types in the box
+    // Updates the img when user picks one from the dropdown
     setSelect(event.target.value);
   };
+
+  //these two update the text on the meme
   const onChangeBottom = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBottomText(event.target.value);
   };
   const onChangeTop = (event) => {
-    console.log(event.target.value);
-    setTopText(event.target.value); //it tracks the changes i think but how do i get the text to show on the pic, just a thought: generating a meme should be a function, so that the set values get passed in there
+    // console.log(event.target.value);
+    setTopText(event.target.value);
   };
 
+  //provides the individual URL of every img plus the text
   const finalUrl =
     select +
     '/' +
@@ -56,14 +98,16 @@ function MemeGenerator(props) {
     bottomText.replace('', '_') +
     '.jpg';
 
+  // const listItems = names.map((name, i) => name);
+
   // let memeMapped = memes.map((name, i) => {
   //   return {
-  //     name: i } ; } the idea is to map over links and assign links to names which were mapped over
+  //     name: i } ; } the idea is to map over links and assign links to names which were mapped over kinda the names ARe links
 
+  //this function downloads the image
   function downloadHandler() {
     const url = finalUrl;
-    const name = names;
-    // name.toString();
+    const name = finalUrl.replace('https://memegen.link/', ''); //so that the downloaded img end up with normal names
     fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -73,7 +117,6 @@ function MemeGenerator(props) {
         return response.blob();
       })
       .then(function (blob) {
-        //IE and edge not works with a.click() for downloading
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, name.toString());
         } else {
@@ -86,13 +129,14 @@ function MemeGenerator(props) {
   }
 
   return (
-    <div className="form">
+    <div className="form" css={divForm}>
       <h2 css={generatorStyle}> This part here generates memes</h2>
-      <select id="memes" onChange={onChangeSelect}>
+      <p>Pick an image:</p>
+      <select id="memes" onChange={onChangeSelect} css={inputstyle}>
         {memes.map((name, i) => {
           return (
             <option key={i} value={name.replace('api/templates/', '')}>
-              {name.replace('api/templates/', '')}
+              {name.replace('https://memegen.link/api/templates/', '')}
             </option>
           );
         })}
@@ -100,34 +144,34 @@ function MemeGenerator(props) {
       </select>
 
       <input
-        // name="text-top"
-        placeholder="Text top"
+        css={inputstyle}
+        placeholder="Top line"
         type="text"
         onChange={onChangeTop}
         value={topText}
       />
 
       <input
-        // name="text-bottom"
-        placeholder="Text bottom"
+        css={inputstyle}
+        placeholder="Bottom line"
         type="text"
         value={bottomText}
         onChange={onChangeBottom}
       />
 
-      <img src={finalUrl} alt="One meme"></img>
+      <img src={finalUrl} alt="One meme" css={imgstyle}></img>
 
       <button
+        css={buttonstyle}
         data-name={names.toString}
         data-url={finalUrl}
-        //it works without - opens a save as window but a user needs to type in the data format. otherwise it throws an error
-        //   download={downloadHandler} well this doesnt work,,,,ok the whole thing downloads but name/format issue plus datei type schaut lustig aus
         onClick={downloadHandler}
-        download
+        // download  --- commented out because it also works without  it
       >
         Download the image
       </button>
     </div>
   );
 }
-//figure out the klammer situation
+
+//Klammer situation out of control
